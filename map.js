@@ -10,12 +10,46 @@ var options = {
 var map = new kakao.maps.Map(container, options);
 
 var markers = []; // 클러스터링용 마커 배열
+// 클러스터러 생성
 var clusterer = new kakao.maps.MarkerClusterer({
     map: map,
-    averageCenter: true,
-    minLevel: 10,   // 클러스터 표시 최소 줌 레벨
+    averageCenter: true,      // 클러스터 중심 위치 계산
+    minLevel: 10,             // 이 레벨 이상이면 클러스터 풀림
     gridSize: 60,
-    disableClickZoom: false
+    disableClickZoom: false,  // 클릭하면 줌 확대
+    styles: [
+        {
+            width: '45px',
+            height: '45px',
+            background: '#ff5252',
+            color: 'white',
+            textAlign: 'center',
+            borderRadius: '50%',
+            lineHeight: '45px',
+            fontSize: '15px',
+            fontWeight: 'bold',
+            border: '2px solid white',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
+        },
+        {
+            width: '55px',
+            height: '55px',
+            background: '#ff5252',
+            color: 'white',
+            textAlign: 'center',
+            borderRadius: '50%',
+            lineHeight: '55px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            border: '2px solid white'
+        }
+    ]
+});
+// 클러스터 클릭 이벤트 (원하면 줌 레벨을 2만큼 올려서 확대)
+kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
+    var level = map.getLevel();            // 현재 지도 레벨
+    map.setLevel(level - 2, { animate: true }); // 2레벨 확대
+    map.setCenter(cluster.getCenter());    // 클릭한 클러스터 중심으로 이동
 });
 
 fetch('lotto.csv')
