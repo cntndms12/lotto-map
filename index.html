@@ -13,13 +13,6 @@ body {
 
 h1 {
   text-align: center;
-  margin-top: 20px;
-}
-
-@media (max-width: 768px) {
-  h1 {
-    margin-top: 40px;
-  }
 }
 
 #map {
@@ -27,20 +20,35 @@ h1 {
   height: 90vh;
 }
 
-/* 모바일 토글 버튼 */
-#toggleListBtn {
+/* 버튼 */
+#mobileButtons {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 999;
+  display: flex;
+  gap: 10px;
+}
+
+#mobileButtons button {
   padding: 10px 14px;
   border: none;
   border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+#toggleListBtn {
   background: #ff5252;
   color: white;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
+  display: none;        /* 기본은 숨김 */
+}
+
+#jackpotBtn {
+  background: #27ae60;
+  color: white;
+  font-weight: bold;
 }
 
 /* 레이아웃 */
@@ -57,6 +65,10 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  #toggleListBtn {
+    display: block;
+  }
+
   #layout {
     flex-direction: row;
   }
@@ -87,7 +99,10 @@ h1 {
 
 <h1>🎯 인천 1등 로또 판매점</h1>
 
-<button id="toggleListBtn">📋 목록 보기</button>
+<div id="mobileButtons">
+	<button id="toggleListBtn">📋목록보기</button>
+	<button id="jackpotBtn">🎰로또번호 뽑기</button>
+</div>
 
 <div id="layout">
   <div id="list">
@@ -113,14 +128,18 @@ h1 {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const toggleBtn = document.getElementById('toggleListBtn');
+  const jackpotBtn = document.getElementById('jackpotBtn');
   const layout = document.getElementById('layout');
 
   toggleBtn.addEventListener('click', () => {
     layout.classList.toggle('show-list');
-
     toggleBtn.textContent = layout.classList.contains('show-list')
-      ? '🗺 지도 보기'
-      : '📋 목록 보기';
+      ? '🗺 지도보기'
+      : '📋목록보기';
+  });
+
+  jackpotBtn.addEventListener('click', () => {
+    window.location.href = "https://cntndms12.github.io/lotto-web/";  // 🔹 여기에 연결할 URL
   });
 });
 </script>
