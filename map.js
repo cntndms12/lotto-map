@@ -164,21 +164,27 @@ fetch('lotto.csv')
             tr.appendChild(tdWin);
 
             tr.onclick = function() {
-              if(currentOverlay) currentOverlay.setMap(null);
-				  map.panTo(position);
-				  overlay.setMap(map);
-				  currentOverlay = overlay;
+			  if(currentOverlay) currentOverlay.setMap(null);
+			  overlay.setMap(map);
+			  currentOverlay = overlay;
 
-				  // 모바일이면 목록 닫기
-				  if(window.innerWidth <= 768){
-					const layout = document.getElementById('layout');
-					layout.classList.remove('show-list');
+			  // 지도 이동
+			  map.panTo(position);
 
-					// 버튼 텍스트도 원래대로
-					const toggleBtn = document.getElementById('toggleListBtn');
-					toggleBtn.textContent = '📋 목록 보기';
-				  }
-            };
+			  // 줌 레벨 설정 (더 가까이 보기)
+			  const currentLevel = map.getLevel(); // 현재 레벨
+			  const targetLevel = Math.min(currentLevel, 7); // 7 정도로 확대, 기존보다 가까움
+			  map.setLevel(targetLevel, { animate: true }); // 애니메이션으로 확대
+
+			  // 모바일이면 목록 닫기
+			  if(window.innerWidth <= 768){
+				const layout = document.getElementById('layout');
+				layout.classList.remove('show-list');
+
+				const toggleBtn = document.getElementById('toggleListBtn');
+				toggleBtn.textContent = '📋 목록 보기';
+			  }
+			};
 
             tableBody.appendChild(tr);
 
@@ -194,4 +200,3 @@ fetch('lotto.csv')
       clusterer.addMarkers(markers); // 모든 마커 클러스터링
     });
   });
-
