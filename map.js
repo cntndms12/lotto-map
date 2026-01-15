@@ -124,4 +124,3 @@ fetch('lotto.csv')
 
     processRow(0);
   });
-
