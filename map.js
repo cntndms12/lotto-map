@@ -167,12 +167,7 @@ fetch('lotto.csv')
 			  if(currentOverlay) currentOverlay.setMap(null);
 			  overlay.setMap(map);
 			  currentOverlay = overlay;
-
-			  // 줌 레벨 설정 (더 가까이 보기)
-			  const currentLevel = map.getLevel(); // 현재 레벨
-			  const targetLevel = Math.min(currentLevel, 7); // 7 정도로 확대, 기존보다 가까움
-			  map.setLevel(targetLevel, { animate: true }); // 애니메이션으로 확대
-
+			  
 			  // 모바일이면 목록 닫기
 			  if(window.innerWidth <= 768){
 				const layout = document.getElementById('layout');
@@ -181,6 +176,15 @@ fetch('lotto.csv')
 				const toggleBtn = document.getElementById('toggleListBtn');
 				toggleBtn.textContent = '📋 목록 보기';
 			  }
+
+			  // 줌 레벨 설정 (더 가까이 보기)
+			  const currentLevel = map.getLevel(); // 현재 레벨
+			  const targetLevel = Math.min(currentLevel, 7); // 7 정도로 확대, 기존보다 가까움
+			  map.setLevel(targetLevel, { animate: true }); // 애니메이션으로 확대
+			  
+			  setTimeout(() => {
+				map.panTo(position);
+			  }, 250); // 0.25초 정도 딜레이
 			};
 
             tableBody.appendChild(tr);
@@ -197,4 +201,3 @@ fetch('lotto.csv')
       clusterer.addMarkers(markers); // 모든 마커 클러스터링
     });
   });
-
