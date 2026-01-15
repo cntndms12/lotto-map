@@ -10,10 +10,13 @@ fetch('lotto.csv')
   .then(text => {
     const lines = text.trim().split('\n').map(l => l.replace('\r',''));
     const headers = lines[0].split(',').map(h => h.replace(/"/g,''));
-    const nameIdx = headers.findIndex(h => h.includes('상호'));
-    const regionIdx = headers.findIndex(h => h.includes('지역'));
 
-    console.log(headers, nameIdx, regionIdx);
+    const regionIdx = headers.findIndex(h => h.includes('지역'));
+    const nameIdx   = headers.findIndex(h => h.includes('상호'));
+    const winIdx    = headers.findIndex(h => h.includes('1등'));
+
+    console.log("headers:", headers);
+    console.log("index:", { regionIdx, nameIdx, winIdx });
 
     const ps = new kakao.maps.services.Places();
     const rows = lines.slice(1);
@@ -22,17 +25,19 @@ fetch('lotto.csv')
       if (i >= rows.length) return;
 
       const cols = rows[i].split(',').map(c => c.replace(/"/g,''));
-      if (!cols[regionIdx]?.includes('인천')) return processRow(i+1);
 
-      const keyword = cols[regionIdx] + " " + cols[nameIdx];
-      console.log("검색:", keyword);
+      if (!cols[regionIdx]?.includes('인천')) {
+        return processRow(i + 1);
+      }
+
+      const keyword  = cols[regionIdx] + " " + cols[nameIdx];
+      const winCount = cols[winIdx] || "0";
 
       ps.keywordSearch(keyword, function(data, status) {
-        console.log(keyword, status);
 
         if (status === kakao.maps.services.Status.OK) {
-          const lat = data[0].y;
-          const lng = data[0].x;
+          const lat  = data[0].y;
+          const lng  = data[0].x;
           const name = data[0].place_name;
 
           const marker = new kakao.maps.Marker({
@@ -42,7 +47,10 @@ fetch('lotto.csv')
           });
 
           const infowindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;">${name}</div>`
+            content: `<div style="padding:5px;">
+              <strong>${name}</strong><br>
+              1등 자동 당첨: ${winCount}회
+            </div>`
           });
 
           kakao.maps.event.addListener(marker, 'click', function() {
@@ -50,7 +58,8 @@ fetch('lotto.csv')
           });
         }
 
-        setTimeout(() => processRow(i+1), 300); // 0.3초 딜레이
+        // API 호출 제한 방지용 딜레이
+        setTimeout(() => processRow(i + 1), 300);
       });
     }
 
