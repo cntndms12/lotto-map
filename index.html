@@ -45,7 +45,7 @@ h1 {
   display: none;        /* 기본은 숨김 */
 }
 
-#jackpotBtn {
+#jackPotBtn {
   background: #27ae60;
   color: white;
 }
@@ -100,7 +100,7 @@ h1 {
 
 <div id="mobileButtons">
 	<button id="toggleListBtn">📋목록보기</button>
-	<button id="jackpotBtn">🎰로또번호 뽑기</button>
+	<button id="jackPotBtn">🎰로또번호 뽑기</button>
 </div>
 
 <div id="layout">
@@ -127,7 +127,7 @@ h1 {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const toggleBtn = document.getElementById('toggleListBtn');
-  const jackpotBtn = document.getElementById('jackpotBtn');
+  const jackPotBtn = document.getElementById('jackPotBtn');
   const layout = document.getElementById('layout');
 
   toggleBtn.addEventListener('click', () => {
@@ -137,12 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
       : '📋목록보기';
   });
 
-  jackpotBtn.addEventListener('click', () => {
-    window.location.href = "https://cntndms12.github.io/lotto-web/";  // 🔹 여기에 연결할 URL
+  jackPotBtn.addEventListener('click', () => {
+    window.location.href = "https://cntndms12.github.io/lotto-web/";
   });
 });
 </script>
 
 </body>
 </html>
-
