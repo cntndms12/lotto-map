@@ -21,7 +21,7 @@ var clusterer = new kakao.maps.MarkerClusterer({
         {
             width: '45px',
             height: '45px',
-            background: '#ff5252',
+            background: '#3498db',
             color: 'white',
             textAlign: 'center',
             borderRadius: '50%',
@@ -34,7 +34,7 @@ var clusterer = new kakao.maps.MarkerClusterer({
         {
             width: '55px',
             height: '55px',
-            background: '#ff5252',
+            background: '#3498db',
             color: 'white',
             textAlign: 'center',
             borderRadius: '50%',
