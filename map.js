@@ -1,32 +1,47 @@
-// 지도 생성
 var container = document.getElementById('map');
 var options = {
-    center: new kakao.maps.LatLng(37.447033, 126.665007), // 우리집 중심
-    level: 5
+  center: new kakao.maps.LatLng(37.456, 126.705),
+  level: 9
 };
 var map = new kakao.maps.Map(container, options);
 
-// 샘플 로또 매장 데이터
-var stores = [
-    { name: "우리집", lat: 37.447033, lng: 126.665007 },
-    { name: "수은수아집", lat: 37.459218, lng: 126.642461 },
-    { name: "할머니집", lat: 37.483231, lng: 126.626268 }
-];
+fetch('lotto.csv')
+  .then(res => res.text())
+  .then(text => {
+    const lines = text.split('\n');
+    const headers = lines[0].split(',');
+    const nameIdx = headers.findIndex(h => h.includes('판매점'));
+    const regionIdx = headers.findIndex(h => h.includes('지역'));
 
-// 매장 마커 찍기
-stores.forEach(function(store) {
-    var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(store.lat, store.lng),
-        title: store.name
-    });
+    const ps = new kakao.maps.services.Places();
 
-    // 클릭하면 이름 보여주기
-    var infowindow = new kakao.maps.InfoWindow({
-        content: `<div style="padding:5px;">${store.name}</div>`
-    });
+    lines.slice(1).forEach(line => {
+      const cols = line.split(',');
 
-    kakao.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map, marker);
+      if (!cols[regionIdx]?.includes('인천')) return;
+
+      const keyword = cols[regionIdx] + " " + cols[nameIdx];
+
+      ps.keywordSearch(keyword, function(data, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          const lat = data[0].y;
+          const lng = data[0].x;
+          const name = data[0].place_name;
+
+          const marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(lat, lng),
+            title: name
+          });
+
+          const infowindow = new kakao.maps.InfoWindow({
+            content: `<div style="padding:5px;">${name}</div>`
+          });
+
+          kakao.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map, marker);
+          });
+        }
+      });
     });
-});
+  });
