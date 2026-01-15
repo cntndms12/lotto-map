@@ -1,6 +1,6 @@
 var container = document.getElementById('map');
 var options = {
-  center: new kakao.maps.LatLng(37.456, 126.705),
+  center: new kakao.maps.LatLng(37.447033, 126.665007),
   level: 9
 };
 var map = new kakao.maps.Map(container, options);
@@ -10,7 +10,7 @@ fetch('lotto.csv')
   .then(text => {
     const lines = text.split('\n');
     const headers = lines[0].split(',');
-    const nameIdx = headers.findIndex(h => h.includes('판매점'));
+    const nameIdx = headers.findIndex(h => h.includes('상호'));
     const regionIdx = headers.findIndex(h => h.includes('지역'));
 
     const ps = new kakao.maps.services.Places();
