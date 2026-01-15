@@ -21,7 +21,7 @@ var clusterer = new kakao.maps.MarkerClusterer({
         {
             width: '45px',
             height: '45px',
-            background: '#3498db',
+            background: '#238CFA',
             color: 'white',
             textAlign: 'center',
             borderRadius: '50%',
@@ -34,7 +34,7 @@ var clusterer = new kakao.maps.MarkerClusterer({
         {
             width: '55px',
             height: '55px',
-            background: '#3498db',
+            background: '#238CFA',
             color: 'white',
             textAlign: 'center',
             borderRadius: '50%',
@@ -194,3 +194,4 @@ fetch('lotto.csv')
       clusterer.addMarkers(markers); // 모든 마커 클러스터링
     });
   });
+
