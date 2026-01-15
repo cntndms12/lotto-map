@@ -4,56 +4,126 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>로또 매장 지도</title>
+
 <style>
-  #map { width: 100%; height: 90vh; }
-  
+body {
+  margin: 0;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
   h1 {
-    text-align: center;
-    margin-top: 20px;
+    margin-top: 40px;
+  }
+}
+
+#map {
+  width: 100%;
+  height: 90vh;
+}
+
+/* 모바일 토글 버튼 */
+#toggleListBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 20px;
+  background: #ff5252;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+/* 레이아웃 */
+#layout {
+  display: flex;
+  height: 90vh;
+}
+
+#list {
+  width: 50%;
+  overflow: auto;
+  border-right: 1px solid #ccc;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  #layout {
+    flex-direction: row;
   }
 
-  @media (max-width: 768px) {
-    h1 {
-      margin-top: 40px;
-    }
+  #list {
+    display: none;
+    width: 80%;
+    height: 100%;
   }
+
+  #map {
+    width: 100%;
+  }
+
+  #layout.show-list #list {
+    display: block;
+  }
+
+  #layout.show-list #map {
+    display: block;
+    width: 20%;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <h1>🎯 인천 1등 로또 판매점</h1>
-<button id="toggleListBtn" style="
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  z-index:999;
-  padding:10px 14px;
-  border:none;
-  border-radius:20px;
-  background:#ff5252;
-  color:white;
-  font-size:14px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.3);
-">
-  📋 목록 보기
-</button>
-<div style="display:flex;height:90vh;">
-  <div id="list" style="width:50%;overflow:auto;border-right:1px solid #ccc;padding:10px;">
-	  <table id="storeTable" style="width:100%;border-collapse:collapse;font-size:13px;">
-		<thead>
-		  <tr style="background:#f2f2f2;">
-			<th>순번</th>
-			<th style="text-align:left;">상호</th>
-			<th style="text-align:left;">지역</th>
-			<th>1등 자동</th>
-		  </tr>
-		</thead>
-		<tbody></tbody>
-	  </table>
+
+<button id="toggleListBtn">📋 목록 보기</button>
+
+<div id="layout">
+  <div id="list">
+    <table id="storeTable" style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#f2f2f2;">
+          <th>순번</th>
+          <th style="text-align:left;">상호</th>
+          <th style="text-align:left;">지역</th>
+          <th>1등 자동</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
-  <div id="map" style="width:70%;"></div>
+
+  <div id="map"></div>
 </div>
 
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=99e36911d2934cad408a449205185e02&libraries=services"></script>
 <script src="map.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('toggleListBtn');
+  const layout = document.getElementById('layout');
+
+  toggleBtn.addEventListener('click', () => {
+    layout.classList.toggle('show-list');
+
+    toggleBtn.textContent = layout.classList.contains('show-list')
+      ? '🗺 지도 보기'
+      : '📋 목록 보기';
+  });
+});
+</script>
+
 </body>
 </html>
