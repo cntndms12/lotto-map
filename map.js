@@ -1,7 +1,7 @@
 // 지도 생성
 var container = document.getElementById('map');
 var options = {
-    center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
+    center: new kakao.maps.LatLng(37.447033, 126.665007), // 우리집 중심
     level: 5
 };
 var map = new kakao.maps.Map(container, options);
