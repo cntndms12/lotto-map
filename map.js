@@ -4,7 +4,7 @@ var tableBody = document.querySelector('#storeTable tbody');
 var currentOverlay = null;
 
 var options = {
-  center: new kakao.maps.LatLng(37.447033, 126.665007),
+  center: new kakao.maps.LatLng(37.447033, 126.665007),	//시작점
   level: 9
 };
 var map = new kakao.maps.Map(container, options);
@@ -28,7 +28,7 @@ fetch('lotto.csv')
           win: parseInt(cols[winIdx] || "0", 10)
         };
       })
-      .filter(d => d.region && d.region.includes('인천'));
+      .filter(d => d.region && (d.region.includes('인천') || d.region.includes('부산')));
 
     data.sort((a, b) => b.win - a.win);
 
