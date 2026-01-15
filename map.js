@@ -9,6 +9,15 @@ var options = {
 };
 var map = new kakao.maps.Map(container, options);
 
+var markers = []; // 클러스터링용 마커 배열
+var clusterer = new kakao.maps.MarkerClusterer({
+    map: map,
+    averageCenter: true,
+    minLevel: 10,   // 클러스터 표시 최소 줌 레벨
+    gridSize: 60,
+    disableClickZoom: false
+});
+
 fetch('lotto.csv')
   .then(res => res.text())
   .then(text => {
@@ -30,8 +39,17 @@ fetch('lotto.csv')
       })
       .filter(d => d.region && (d.region.includes('인천') || d.region.includes('부산')));
 
-	//목록 정렬
-    data.sort((a, b) => {
+	// 중복 제거 (상호+지역+당첨 동일시 제거)
+    let seen = new Set();
+    data = data.filter(d => {
+      const key = d.name + '|' + d.region + '|' + d.win;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // 정렬: 1등 내림차순, 같으면 상호명 가나다순
+    data.sort((a,b) => {
       if (b.win !== a.win) return b.win - a.win;
       return a.name.localeCompare(b.name, 'ko');
     });
@@ -49,7 +67,8 @@ fetch('lotto.csv')
             const position = new kakao.maps.LatLng(place.y, place.x);
 
             // 마커 생성
-            const marker = new kakao.maps.Marker({ map, position });
+            const marker = new kakao.maps.Marker({ position });
+            markers.push(marker); // 클러스터에 추가
 
             // 오버레이
             const overlay = new kakao.maps.CustomOverlay({
@@ -98,7 +117,7 @@ fetch('lotto.csv')
             const tdRegion = document.createElement('td');
             const tdWin    = document.createElement('td');
 
-            tdIndex.textContent  = i + 1;
+            tdIndex.textContent  = tableBody.children.length + 1; // 무조건 순서대로
             tdName.textContent   = place.place_name;
             tdRegion.textContent = row.region;
             tdWin.textContent    = row.win;
@@ -112,9 +131,19 @@ fetch('lotto.csv')
 
             tr.onclick = function() {
               if(currentOverlay) currentOverlay.setMap(null);
-              map.panTo(position);
-              overlay.setMap(map);
-              currentOverlay = overlay;
+				  map.panTo(position);
+				  overlay.setMap(map);
+				  currentOverlay = overlay;
+
+				  // 모바일이면 목록 닫기
+				  if(window.innerWidth <= 768){
+					const layout = document.getElementById('layout');
+					layout.classList.remove('show-list');
+
+					// 버튼 텍스트도 원래대로
+					const toggleBtn = document.getElementById('toggleListBtn');
+					toggleBtn.textContent = '📋 목록 보기';
+				  }
             };
 
             tableBody.appendChild(tr);
@@ -126,9 +155,8 @@ fetch('lotto.csv')
       });
     });
 
-    // 모든 검색 완료 후 bounds 적용 (전국 보기)
     Promise.all(searchPromises).then(() => {
       map.setBounds(bounds);
+      clusterer.addMarkers(markers); // 모든 마커 클러스터링
     });
-
   });
