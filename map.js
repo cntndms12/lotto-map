@@ -55,25 +55,36 @@ fetch('lotto.csv')
           const infowindow = new kakao.maps.InfoWindow({
 			  content: `
 				<div style="
+				  transform: translateX(-50%);
 				  display:flex;
-				  justify-content:center;
+				  flex-direction:column;
 				  align-items:center;
-				  text-align:center;
 				">
 				  <div style="
 					padding:10px 14px;
 					font-size:15px;
 					line-height:1.5;
 					font-family:'Malgun Gothic','맑은 고딕',sans-serif;
+					text-align:center;
 					white-space:nowrap;
+					background:white;
+					border-radius:6px;
+					box-shadow:0 2px 6px rgba(0,0,0,0.25);
 				  ">
 					<strong>${place.place_name}</strong><br/>
 					1등 자동 ${row.win}회
 				  </div>
+				  <div style="
+					width:0;
+					height:0;
+					border-left:7px solid transparent;
+					border-right:7px solid transparent;
+					border-top:10px solid white;
+				  "></div>
 				</div>
 			  `
 			});
-
+			
           kakao.maps.event.addListener(marker, 'click', function() {
             if (currentInfowindow) currentInfowindow.close();
             infowindow.open(map, marker);
