@@ -8,9 +8,9 @@ var map = new kakao.maps.Map(container, options);
 
 // 샘플 로또 매장 데이터
 var stores = [
-    { name: "로또24", lat: 37.5665, lng: 126.9780 },
-    { name: "행운복권", lat: 37.5700, lng: 126.9820 },
-    { name: "복권천국", lat: 37.5630, lng: 126.9750 }
+    { name: "우리집", lat: 37.447033, lng: 126.665007 },
+    { name: "수은수아집", lat: 37.459218, lng: 126.642461 },
+    { name: "할머니집", lat: 37.483231, lng: 126.626268 }
 ];
 
 // 매장 마커 찍기
