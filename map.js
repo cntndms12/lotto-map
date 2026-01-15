@@ -1,4 +1,8 @@
 var container = document.getElementById('map');
+var listContainer = document.getElementById('list');
+
+var currentInfowindow = null;
+
 var options = {
   center: new kakao.maps.LatLng(37.447033, 126.665007),
   level: 9
@@ -14,9 +18,6 @@ fetch('lotto.csv')
     const regionIdx = headers.findIndex(h => h.includes('지역'));
     const nameIdx   = headers.findIndex(h => h.includes('상호'));
     const winIdx    = headers.findIndex(h => h.includes('1등'));
-
-    console.log("headers:", headers);
-    console.log("index:", { regionIdx, nameIdx, winIdx });
 
     const ps = new kakao.maps.services.Places();
     const rows = lines.slice(1);
@@ -34,31 +35,59 @@ fetch('lotto.csv')
       const winCount = cols[winIdx] || "0";
 
       ps.keywordSearch(keyword, function(data, status) {
-
         if (status === kakao.maps.services.Status.OK) {
           const lat  = data[0].y;
           const lng  = data[0].x;
           const name = data[0].place_name;
 
+          const position = new kakao.maps.LatLng(lat, lng);
+
           const marker = new kakao.maps.Marker({
             map: map,
-            position: new kakao.maps.LatLng(lat, lng),
+            position: position,
             title: name
           });
 
           const infowindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;">
-              <strong>${name}</strong><br>
-              1등 자동 당첨: ${winCount}회
-            </div>`
+            content: `
+              <div style="
+                padding:8px;
+                text-align:center;
+                font-size:13px;
+                line-height:1.4;
+              ">
+                <strong>${name}</strong><br/>
+                1등 자동 당첨 ${winCount}회
+              </div>
+            `
           });
 
           kakao.maps.event.addListener(marker, 'click', function() {
+            if (currentInfowindow) {
+              currentInfowindow.close();
+            }
             infowindow.open(map, marker);
+            currentInfowindow = infowindow;
           });
+
+          const item = document.createElement('div');
+          item.style.padding = "8px";
+          item.style.borderBottom = "1px solid #eee";
+          item.style.cursor = "pointer";
+          item.innerHTML = `<strong>${name}</strong><br>1등 자동: ${winCount}회`;
+
+          item.onclick = function() {
+            if (currentInfowindow) {
+              currentInfowindow.close();
+            }
+            map.panTo(position);
+            infowindow.open(map, marker);
+            currentInfowindow = infowindow;
+          };
+
+          listContainer.appendChild(item);
         }
 
-        // API 호출 제한 방지용 딜레이
         setTimeout(() => processRow(i + 1), 300);
       });
     }
