@@ -1,7 +1,7 @@
 var container = document.getElementById('map');
 var tableBody = document.querySelector('#storeTable tbody');
 
-var currentInfowindow = null;
+var currentOverlay = null;
 
 var options = {
   center: new kakao.maps.LatLng(37.447033, 126.665007),
@@ -30,7 +30,6 @@ fetch('lotto.csv')
       })
       .filter(d => d.region && d.region.includes('인천'));
 
-    // 1등 자동 당첨 내림차순
     data.sort((a, b) => b.win - a.win);
 
     const ps = new kakao.maps.services.Places();
@@ -52,43 +51,44 @@ fetch('lotto.csv')
             title: place.place_name
           });
 
-          const infowindow = new kakao.maps.InfoWindow({
-			  content: `
-				<div style="
-				  transform: translateX(-50%);
-				  display:flex;
-				  flex-direction:column;
-				  align-items:center;
-				">
-				  <div style="
-					padding:10px 14px;
-					font-size:15px;
-					line-height:1.5;
-					font-family:'Malgun Gothic','맑은 고딕',sans-serif;
-					text-align:center;
-					white-space:nowrap;
-					background:white;
-					border-radius:6px;
-					box-shadow:0 2px 6px rgba(0,0,0,0.25);
-				  ">
-					<strong>${place.place_name}</strong><br/>
-					1등 자동 ${row.win}회
-				  </div>
-				  <div style="
-					width:0;
-					height:0;
-					border-left:7px solid transparent;
-					border-right:7px solid transparent;
-					border-top:10px solid white;
-				  "></div>
-				</div>
-			  `
-			});
-			
+          const overlay = new kakao.maps.CustomOverlay({
+            position: position,
+            content: `
+              <div style="
+                transform: translateX(15%);
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+              ">
+                <div style="
+                  padding:10px 14px;
+                  font-size:15px;
+                  line-height:1.5;
+                  font-family:'Malgun Gothic','맑은 고딕',sans-serif;
+                  text-align:center;
+                  white-space:nowrap;
+                  background:white;
+                  border-radius:6px;
+                  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+                ">
+                  <strong>${place.place_name}</strong><br/>
+                  1등 자동 ${row.win}회
+                </div>
+                <div style="
+                  width:0;
+                  height:0;
+                  border-left:7px solid transparent;
+                  border-right:7px solid transparent;
+                  border-top:10px solid white;
+                "></div>
+              </div>
+            `
+          });
+
           kakao.maps.event.addListener(marker, 'click', function() {
-            if (currentInfowindow) currentInfowindow.close();
-            infowindow.open(map, marker);
-            currentInfowindow = infowindow;
+            if (currentOverlay) currentOverlay.setMap(null);
+            overlay.setMap(map);
+            currentOverlay = overlay;
           });
 
           const tr = document.createElement('tr');
@@ -112,10 +112,10 @@ fetch('lotto.csv')
           tr.appendChild(tdWin);
 
           tr.onclick = function() {
-            if (currentInfowindow) currentInfowindow.close();
+            if (currentOverlay) currentOverlay.setMap(null);
             map.panTo(position);
-            infowindow.open(map, marker);
-            currentInfowindow = infowindow;
+            overlay.setMap(map);
+            currentOverlay = overlay;
           };
 
           tableBody.appendChild(tr);
