@@ -168,9 +168,6 @@ fetch('lotto.csv')
 			  overlay.setMap(map);
 			  currentOverlay = overlay;
 
-			  // 지도 이동
-			  map.panTo(position);
-
 			  // 줌 레벨 설정 (더 가까이 보기)
 			  const currentLevel = map.getLevel(); // 현재 레벨
 			  const targetLevel = Math.min(currentLevel, 7); // 7 정도로 확대, 기존보다 가까움
@@ -200,3 +197,4 @@ fetch('lotto.csv')
       clusterer.addMarkers(markers); // 모든 마커 클러스터링
     });
   });
+
