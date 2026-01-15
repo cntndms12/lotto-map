@@ -79,7 +79,7 @@ fetch('lotto.csv')
 				</div>
 			  `,
 			  xAnchor: 0.5,
-			  yAnchor: 1
+			  yAnchor: 1.35
 			});
 
           kakao.maps.event.addListener(marker, 'click', function() {
@@ -124,3 +124,4 @@ fetch('lotto.csv')
 
     processRow(0);
   });
+
